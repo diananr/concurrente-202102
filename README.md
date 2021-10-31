@@ -1,4 +1,4 @@
-# Nombre del proyecto
+# PlantDex 🍃
 
 Trabajo final de Programación Concurrente y Distribuida 2021-02
 
