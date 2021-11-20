@@ -1,0 +1,38 @@
+.appView {
+  display: flex;
+  flex-direction: row;
+}
+
+.appView_content {
+  padding: 2rem 4rem;
+  flex: 1;
+}
+
+.appView_content > .title {
+  color: #748c3f;
+  font-size: 30px;
+  font-weight: 900;
+  margin: 0 0 2rem;
+}
+
+.appView_figure {
+  background-image: url('../assets/iris-flower.jpg');
+  background-position: center;
+  background-size: cover;
+  flex: 1;
+  height: 100vh;
+  margin: 0;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .appView_content {
+    padding: 2rem;
+  }
+  .appView_content > .title {
+    margin: 0 0 1rem;
+  }
+  .appView_figure {
+    display: none;
+  }
+}
