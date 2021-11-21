@@ -131,7 +131,9 @@ func enviarEntrenamiento(mensaje DataTrain) {
 	// connect to this socket
 	conn, _ := net.Dial("tcp", "127.0.0.1:8081")
 	// send to socket
-	fmt.Fprintln(conn, mensaje)
+	//fmt.Fprintln(conn, mensaje)
+	byteMensaje, _ := json.Marshal(mensaje)
+	fmt.Fprintf(conn, "%s\n", byteMensaje)
 	// listen for reply
 	message, _ := bufio.NewReader(conn).ReadString('\n')
 	fmt.Print("Message from server: " + message)
@@ -142,7 +144,9 @@ func enviarPrediccion(mensaje DataPredcit) {
 	// connect to this socket
 	conn, _ := net.Dial("tcp", "127.0.0.1:8081")
 	// send to socket
-	fmt.Fprintln(conn, mensaje)
+	byteMensaje, _ := json.Marshal(mensaje)
+	fmt.Fprintf(conn, "%s\n", string(byteMensaje))
+	//fmt.Fprintln(conn, mensaje)
 	// listen for reply
 	message, _ := bufio.NewReader(conn).ReadString('\n')
 	fmt.Print("Message from server: " + message)
