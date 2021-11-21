@@ -3,86 +3,46 @@ import Button from '../Button/Button';
 import Input from '../Input/Input';
 import Modal from '../Modal/Modal';
 import Select from '../Select/Select';
+import { irisTypes, isValid, postRequest } from './util';
 import './form.css';
 
 const urlBase = 'http://localhost:9000';
-const irisTypes = [
-  {
-    label: 'Setosa',
-    value: 'Iris-setosa',
-  },
-  {
-    label: 'Versicolor',
-    value: 'Iris-versicolor',
-  },
-  {
-    label: 'Virginica',
-    value: 'Iris-virginica',
-  },
-];
 
 const Form: React.FC<any> = () => {
   const [formData, setFormData] = useState({
-    sepal_length: '',
-    petal_length: '',
-    sepal_width: '',
-    petal_width: '',
     iris_type: '',
+    petal_length: '',
+    petal_width: '',
+    sepal_length: '',
+    sepal_width: '',
   });
   const [errorData, setErrorData] = useState({
-    sepal_length: '',
     petal_length: '',
-    sepal_width: '',
     petal_width: '',
+    sepal_length: '',
+    sepal_width: '',
   });
   const [loadingTraining, setLoadingTraining] = useState<boolean>(false);
   const [loadingSending, setLoadingSending] = useState<boolean>(false);
   const [showMessage, setShowMessage] = useState<boolean>(true);
 
-  const isValid = () => {
-    let errorMessages = { ...errorData };
-    let thereAreErrors = false;
-    if (formData.sepal_length.length === 0) {
-      errorMessages.sepal_length = 'Ingrese un valor en el campo';
-      thereAreErrors = true;
-    }
-    if (formData.petal_length.length === 0) {
-      errorMessages.petal_length = 'Ingrese un valor en el campo';
-      thereAreErrors = true;
-    }
-    if (formData.sepal_width.length === 0) {
-      errorMessages.sepal_width = 'Ingrese un valor en el campo';
-      thereAreErrors = true;
-    }
-    if (formData.petal_width.length === 0) {
-      errorMessages.petal_width = 'Ingrese un valor en el campo';
-      thereAreErrors = true;
-    }
-    setErrorData(errorMessages);
-    return !thereAreErrors;
+  const closeModal = () => {
+    setShowMessage(false);
   };
 
   const sendData = async () => {
     try {
-      if (isValid()) {
+      const { isFormValid, errorMessages } = isValid(formData, errorData);
+      if (isFormValid) {
         setLoadingSending(true);
         const url = `${urlBase}/agregarpredict`;
         const { iris_type, ...otherFormData } = formData;
         const payload = { ...otherFormData, typeRequest: 'predict' };
-        const response = await fetch(url, {
-          method: 'POST',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
+        const response = postRequest(url, payload);
         console.log('response', response);
         setLoadingSending(false);
-        const data = response.json();
-        console.log('data', data);
+      } else {
+        setErrorData(errorMessages);
       }
     } catch (error) {
       setLoadingSending(false);
@@ -92,7 +52,8 @@ const Form: React.FC<any> = () => {
 
   const toTrainData = async () => {
     try {
-      if (isValid()) {
+      const { isFormValid, errorMessages } = isValid(formData, errorData);
+      if (isFormValid) {
         setLoadingTraining(true);
         const url = `${urlBase}/agregartrain`;
         const { iris_type, ...otherFormData } = formData;
@@ -101,29 +62,16 @@ const Form: React.FC<any> = () => {
           class: iris_type,
           typeRequest: 'train',
         };
-        const response = await fetch(url, {
-          method: 'POST',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
+        const response = postRequest(url, payload);
         console.log('response', response);
         setLoadingTraining(false);
-        const data = response.json();
-        console.log('data', data);
+      } else {
+        setErrorData(errorMessages);
       }
     } catch (error) {
       setLoadingTraining(false);
       console.log('error', error);
     }
-  };
-
-  const closeModal = () => {
-    setShowMessage(false);
   };
 
   return (
