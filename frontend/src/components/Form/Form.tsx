@@ -2,21 +2,38 @@ import React, { useState } from 'react';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 import Modal from '../Modal/Modal';
-import './formA.css';
+import Select from '../Select/Select';
+import './form.css';
 
-const FormA: React.FC<any> = () => {
+const urlBase = 'http://localhost:9000';
+const irisTypes = [
+  {
+    label: 'Setosa',
+    value: 'Iris-setosa',
+  },
+  {
+    label: 'Versicolor',
+    value: 'Iris-versicolor',
+  },
+  {
+    label: 'Virginica',
+    value: 'Iris-virginica',
+  },
+];
+
+const Form: React.FC<any> = () => {
   const [formData, setFormData] = useState({
-    altoCepalo: '',
-    altoPetalo: '',
-    anchoCepalo: '',
-    anchoPetalo: '',
-    tipoIris: '',
+    sepal_length: '',
+    petal_length: '',
+    sepal_width: '',
+    petal_width: '',
+    iris_type: '',
   });
   const [errorData, setErrorData] = useState({
-    altoCepalo: '',
-    altoPetalo: '',
-    anchoCepalo: '',
-    anchoPetalo: '',
+    sepal_length: '',
+    petal_length: '',
+    sepal_width: '',
+    petal_width: '',
   });
   const [loadingTraining, setLoadingTraining] = useState<boolean>(false);
   const [loadingSending, setLoadingSending] = useState<boolean>(false);
@@ -25,20 +42,20 @@ const FormA: React.FC<any> = () => {
   const isValid = () => {
     let errorMessages = { ...errorData };
     let thereAreErrors = false;
-    if (formData.altoCepalo.length === 0) {
-      errorMessages.altoCepalo = 'Ingrese un valor en el campo';
+    if (formData.sepal_length.length === 0) {
+      errorMessages.sepal_length = 'Ingrese un valor en el campo';
       thereAreErrors = true;
     }
-    if (formData.altoPetalo.length === 0) {
-      errorMessages.altoPetalo = 'Ingrese un valor en el campo';
+    if (formData.petal_length.length === 0) {
+      errorMessages.petal_length = 'Ingrese un valor en el campo';
       thereAreErrors = true;
     }
-    if (formData.anchoCepalo.length === 0) {
-      errorMessages.anchoCepalo = 'Ingrese un valor en el campo';
+    if (formData.sepal_width.length === 0) {
+      errorMessages.sepal_width = 'Ingrese un valor en el campo';
       thereAreErrors = true;
     }
-    if (formData.anchoPetalo.length === 0) {
-      errorMessages.anchoPetalo = 'Ingrese un valor en el campo';
+    if (formData.petal_width.length === 0) {
+      errorMessages.petal_width = 'Ingrese un valor en el campo';
       thereAreErrors = true;
     }
     setErrorData(errorMessages);
@@ -49,7 +66,9 @@ const FormA: React.FC<any> = () => {
     try {
       if (isValid()) {
         setLoadingSending(true);
-        const url = 'https://rickandmortyapi.com/api/character/2';
+        const url = `${urlBase}/agregarpredict`;
+        const { iris_type, ...otherFormData } = formData;
+        const payload = { ...otherFormData, typeRequest: 'predict' };
         const response = await fetch(url, {
           method: 'POST',
           mode: 'cors',
@@ -58,7 +77,7 @@ const FormA: React.FC<any> = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         });
         console.log('response', response);
         setLoadingSending(false);
@@ -75,7 +94,13 @@ const FormA: React.FC<any> = () => {
     try {
       if (isValid()) {
         setLoadingTraining(true);
-        const url = 'https://rickandmortyapi.com/api/character/2';
+        const url = `${urlBase}/agregartrain`;
+        const { iris_type, ...otherFormData } = formData;
+        const payload = {
+          ...otherFormData,
+          class: iris_type,
+          typeRequest: 'train',
+        };
         const response = await fetch(url, {
           method: 'POST',
           mode: 'cors',
@@ -84,7 +109,7 @@ const FormA: React.FC<any> = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         });
         console.log('response', response);
         setLoadingTraining(false);
@@ -117,55 +142,56 @@ const FormA: React.FC<any> = () => {
           <Input
             className="formInput"
             label="Alto del pétalo"
-            value={formData.altoPetalo}
-            error={errorData.altoPetalo}
+            value={formData.petal_length}
+            error={errorData.petal_length}
             onChange={(e) => {
               const newValue = e.target.value;
-              const { altoPetalo, ...otherValues } = formData;
-              setFormData({ altoPetalo: newValue, ...otherValues });
+              const { petal_length, ...otherValues } = formData;
+              setFormData({ petal_length: newValue, ...otherValues });
             }}
           />
           <Input
             className="formInput"
             label="Ancho del pétalo"
-            value={formData.anchoPetalo}
-            error={errorData.anchoPetalo}
+            value={formData.petal_width}
+            error={errorData.petal_width}
             onChange={(e) => {
               const newValue = e.target.value;
-              const { anchoPetalo, ...otherValues } = formData;
-              setFormData({ anchoPetalo: newValue, ...otherValues });
+              const { petal_width, ...otherValues } = formData;
+              setFormData({ petal_width: newValue, ...otherValues });
             }}
           />
           <Input
             className="formInput"
             label="Alto del cépalo"
-            value={formData.altoCepalo}
-            error={errorData.altoCepalo}
+            value={formData.sepal_length}
+            error={errorData.sepal_length}
             onChange={(e) => {
               const newValue = e.target.value;
-              const { altoCepalo, ...otherValues } = formData;
-              setFormData({ altoCepalo: newValue, ...otherValues });
+              const { sepal_length, ...otherValues } = formData;
+              setFormData({ sepal_length: newValue, ...otherValues });
             }}
           />
           <Input
             className="formInput"
             label="Ancho del cépalo"
-            value={formData.anchoCepalo}
-            error={errorData.anchoCepalo}
+            value={formData.sepal_width}
+            error={errorData.sepal_width}
             onChange={(e) => {
               const newValue = e.target.value;
-              const { anchoCepalo, ...otherValues } = formData;
-              setFormData({ anchoCepalo: newValue, ...otherValues });
+              const { sepal_width, ...otherValues } = formData;
+              setFormData({ sepal_width: newValue, ...otherValues });
             }}
           />
-          <Input
+          <Select
             className="formInput"
             label="Tipo de iris"
-            value={formData.tipoIris}
+            options={irisTypes}
+            value={formData.iris_type}
             onChange={(e) => {
               const newValue = e.target.value;
-              const { tipoIris, ...otherValues } = formData;
-              setFormData({ tipoIris: newValue, ...otherValues });
+              const { iris_type, ...otherValues } = formData;
+              setFormData({ iris_type: newValue, ...otherValues });
             }}
           />
           <div className="formButtons">
@@ -190,4 +216,4 @@ const FormA: React.FC<any> = () => {
   );
 };
 
-export default FormA;
+export default Form;
