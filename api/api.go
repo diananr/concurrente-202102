@@ -136,10 +136,10 @@ func conectarNodoPrincipal() {
 		// listen for reply
 		message, _ := bufio.NewReader(conn).ReadString('\n')
 		fmt.Print("Message from server: " + message)
+		go manejadorSolicitudes()
 	}
 }
 
 func main() {
-	go conectarNodoPrincipal()
-	go manejadorSolicitudes()
+	conectarNodoPrincipal()
 }
