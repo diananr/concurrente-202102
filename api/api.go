@@ -10,21 +10,23 @@ import (
 
 //Estructura Para Entrenar
 type DataTrain struct {
-	SepalL float64 `json:"sepal_length"`
-	SepalW float64 `json:"sepal_width"`
-	PetalL float64 `json:"petal_length"`
-	PetalW float64 `json:"petal_width"`
-	Class  string  `json:"class"`
+	SepalL      float64 `json:"sepal_length"`
+	SepalW      float64 `json:"sepal_width"`
+	PetalL      float64 `json:"petal_length"`
+	PetalW      float64 `json:"petal_width"`
+	Class       string  `json:"class"`
+	typeRequest string  `json:"typeRequest"`
 }
 
 var listDataTrain []DataTrain
 
 //Estructura para Predecir
 type DataPredcit struct {
-	SepalL float64 `json:"sepal_length"`
-	SepalW float64 `json:"sepal_width"`
-	PetalL float64 `json:"petal_length"`
-	PetalW float64 `json:"petal_width"`
+	SepalL      float64 `json:"sepal_length"`
+	SepalW      float64 `json:"sepal_width"`
+	PetalL      float64 `json:"petal_length"`
+	PetalW      float64 `json:"petal_width"`
+	typeRequest string  `json:"typeRequest"`
 }
 
 var listDataPredict []DataPredcit
@@ -89,7 +91,7 @@ func agregarPrediccion(response http.ResponseWriter, request *http.Request) {
 			//Respuesta del servidor
 			response.Header().Set("Content-Type", "application/json")
 			io.WriteString(response, `{
-				"msg":"Registro Data Entrenamiento correcta"
+				"msg":"Registro Data Predicicón correcta"
 			}`)
 		} else {
 			http.Error(response, "Contenido no válido", http.StatusBadRequest)
