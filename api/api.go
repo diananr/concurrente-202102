@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-
-	"github.com/rs/cors"
 )
 
 //Estructura Para Entrenar
@@ -70,6 +68,7 @@ func agregarEntrenamiento(response http.ResponseWriter, request *http.Request) {
 
 			//Respuesta del servidor
 			response.Header().Set("Content-Type", "application/json")
+			response.WriteHeader(http.StatusOK)
 			io.WriteString(response, `{
 				"msg":"Registro Data Entrenamiento correcta"
 			}`)
@@ -101,6 +100,7 @@ func agregarPrediccion(response http.ResponseWriter, request *http.Request) {
 
 			//Respuesta del servidor
 			response.Header().Set("Content-Type", "application/json")
+			response.WriteHeader(http.StatusOK)
 			io.WriteString(response, `{
 				"msg":"Registro Data Predicicón correcta"
 			}`)
@@ -122,10 +122,10 @@ func manejadorSolicitudes() {
 	mux.HandleFunc("/agregarpredict", agregarPrediccion)
 
 	//CORS Handler
-	handler := cors.Default().Handler(mux)
+	//handler := cors.Default().Handler(mux)
 
 	//Errors
-	log.Fatal(http.ListenAndServe(":9000", handler))
+	log.Fatal(http.ListenAndServe(":9000", mux))
 }
 
 func main() {
