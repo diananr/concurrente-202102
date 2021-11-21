@@ -10,21 +10,23 @@ import (
 
 //Estructura Para Entrenar
 type DataTrain struct {
-	SepalL float64 `json:"sepal_length"`
-	SepalW float64 `json:"sepal_width"`
-	PetalL float64 `json:"petal_length"`
-	PetalW float64 `json:"petal_width"`
-	Class  string  `json:"class"`
+	SepalL      float64 `json:"sepal_length"`
+	SepalW      float64 `json:"sepal_width"`
+	PetalL      float64 `json:"petal_length"`
+	PetalW      float64 `json:"petal_width"`
+	Class       string  `json:"class"`
+	typeRequest string  `json:"typeRequest"`
 }
 
 var listDataTrain []DataTrain
 
 //Estructura para Predecir
 type DataPredcit struct {
-	SepalL float64 `json:"sepal_length"`
-	SepalW float64 `json:"sepal_width"`
-	PetalL float64 `json:"petal_length"`
-	PetalW float64 `json:"petal_width"`
+	SepalL      float64 `json:"sepal_length"`
+	SepalW      float64 `json:"sepal_width"`
+	PetalL      float64 `json:"petal_length"`
+	PetalW      float64 `json:"petal_width"`
+	typeRequest string  `json:"typeRequest"`
 }
 
 var listDataPredict []DataPredcit
@@ -69,6 +71,36 @@ func agregarEntrenamiento(response http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func agregarPrediccion(response http.ResponseWriter, request *http.Request) {
+	if request.Method == "POST" {
+		if request.Header.Get("Content-Type") == "application/json" {
+			//Almacena la info que llega por el body
+			body, err := ioutil.ReadAll(request.Body)
+
+			if err != nil {
+				log.Fatal(err)
+				http.Error(response, "Error al leer el body", http.StatusInternalServerError)
+			}
+
+			var dataPredict DataPredcit
+
+			json.Unmarshal(body, &dataPredict)
+
+			listDataPredict = append(listDataPredict, dataPredict)
+
+			//Respuesta del servidor
+			response.Header().Set("Content-Type", "application/json")
+			io.WriteString(response, `{
+				"msg":"Registro Data Predicicón correcta"
+			}`)
+		} else {
+			http.Error(response, "Contenido no válido", http.StatusBadRequest)
+		}
+	} else {
+		http.Error(response, "Método no válido", http.StatusMethodNotAllowed)
+	}
+}
+
 func manejadorSolicitudes() {
 	//Enrutador
 	mux := http.NewServeMux()
@@ -76,6 +108,7 @@ func manejadorSolicitudes() {
 	//Endpoints
 	mux.HandleFunc("/home", mostrarHome)
 	mux.HandleFunc("/agregartrain", agregarEntrenamiento)
+	mux.HandleFunc("/agregarpredict", agregarPrediccion)
 
 	//Errors
 	log.Fatal(http.ListenAndServe(":9000", mux))
