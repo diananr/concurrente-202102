@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/rs/cors"
 )
 
 //Estructura Para Entrenar
@@ -31,12 +33,12 @@ type DataPredcit struct {
 
 var listDataPredict []DataPredcit
 
-//Cors Handler
-func setupCorsResponse(response *http.ResponseWriter, request *http.Request) {
-	(*response).Header().Set("Access-Control-Allow-Origin", "*")
-	(*response).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	(*response).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
-}
+// //Cors Handler
+// func setupCorsResponse(response *http.ResponseWriter, request *http.Request) {
+// 	(*response).Header().Set("Access-Control-Allow-Origin", "*")
+// 	(*response).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+// 	(*response).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
+// }
 
 func mostrarHome(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "text/html")
@@ -49,7 +51,7 @@ func mostrarHome(response http.ResponseWriter, request *http.Request) {
 }
 
 func agregarEntrenamiento(response http.ResponseWriter, request *http.Request) {
-	setupCorsResponse(&response, request)
+	//setupCorsResponse(&response, request)
 	if request.Method == "POST" {
 		if request.Header.Get("Content-Type") == "application/json" {
 			//Almacena la info que llega por el body
@@ -80,7 +82,7 @@ func agregarEntrenamiento(response http.ResponseWriter, request *http.Request) {
 }
 
 func agregarPrediccion(response http.ResponseWriter, request *http.Request) {
-	setupCorsResponse(&response, request)
+	//setupCorsResponse(&response, request)
 	if request.Method == "POST" {
 		if request.Header.Get("Content-Type") == "application/json" {
 			//Almacena la info que llega por el body
@@ -119,8 +121,11 @@ func manejadorSolicitudes() {
 	mux.HandleFunc("/agregartrain", agregarEntrenamiento)
 	mux.HandleFunc("/agregarpredict", agregarPrediccion)
 
+	//CORS Handler
+	handler := cors.Default().Handler(mux)
+
 	//Errors
-	log.Fatal(http.ListenAndServe(":9000", mux))
+	log.Fatal(http.ListenAndServe(":9000", handler))
 }
 
 func main() {
