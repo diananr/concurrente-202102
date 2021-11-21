@@ -7,15 +7,16 @@ import { irisTypes, isValid, postRequest } from './util';
 import './form.css';
 
 const urlBase = 'http://localhost:9000';
+const initForm = {
+  iris_type: '',
+  petal_length: 0,
+  petal_width: 0,
+  sepal_length: 0,
+  sepal_width: 0,
+};
 
 const Form: React.FC<any> = () => {
-  const [formData, setFormData] = useState({
-    iris_type: '',
-    petal_length: 0,
-    petal_width: 0,
-    sepal_length: 0,
-    sepal_width: 0,
-  });
+  const [formData, setFormData] = useState(initForm);
   const [errorData, setErrorData] = useState({
     petal_length: '',
     petal_width: '',
@@ -25,9 +26,11 @@ const Form: React.FC<any> = () => {
   const [loadingTraining, setLoadingTraining] = useState<boolean>(false);
   const [loadingSending, setLoadingSending] = useState<boolean>(false);
   const [showMessage, setShowMessage] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
 
   const closeModal = () => {
     setShowMessage(false);
+    setFormData(initForm);
   };
 
   const sendData = async () => {
@@ -38,8 +41,10 @@ const Form: React.FC<any> = () => {
         const url = `${urlBase}/agregarpredict`;
         const { iris_type, ...otherFormData } = formData;
         const payload = { ...otherFormData, typeRequest: 'predict' };
-        const response = postRequest(url, payload);
-        setLoadingSending(false);
+        const response = await postRequest(url, payload);
+        setLoadingTraining(false);
+        setModalMessage(response.msg);
+        setShowMessage(true);
       } else {
         setErrorData(errorMessages);
       }
@@ -60,8 +65,10 @@ const Form: React.FC<any> = () => {
           class: iris_type,
           typeRequest: 'train',
         };
-        const response = postRequest(url, payload);
+        const response = await postRequest(url, payload);
         setLoadingTraining(false);
+        setModalMessage(response.msg);
+        setShowMessage(true);
       } else {
         setErrorData(errorMessages);
       }
@@ -74,7 +81,7 @@ const Form: React.FC<any> = () => {
     <>
       {showMessage && (
         <Modal active={showMessage} onClose={closeModal}>
-          <p>Message!</p>
+          <p>{modalMessage}</p>
         </Modal>
       )}
       <section className="formA">

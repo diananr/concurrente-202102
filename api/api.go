@@ -31,12 +31,11 @@ type DataPredcit struct {
 
 var listDataPredict []DataPredcit
 
-// //Cors Handler
-// func setupCorsResponse(response *http.ResponseWriter, request *http.Request) {
-// 	(*response).Header().Set("Access-Control-Allow-Origin", "*")
-// 	(*response).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-// 	(*response).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
-// }
+func enableCors(res *http.ResponseWriter) {
+	(*res).Header().Set("Access-Control-Allow-Origin", "*")
+	(*res).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*res).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+}
 
 func mostrarHome(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "text/html")
@@ -49,64 +48,56 @@ func mostrarHome(response http.ResponseWriter, request *http.Request) {
 }
 
 func agregarEntrenamiento(response http.ResponseWriter, request *http.Request) {
-	//setupCorsResponse(&response, request)
+	enableCors(&response)
 	if request.Method == "POST" {
-		if request.Header.Get("Content-Type") == "application/json" {
-			//Almacena la info que llega por el body
-			body, err := ioutil.ReadAll(request.Body)
+		//Almacena la info que llega por el body
+		body, err := ioutil.ReadAll(request.Body)
 
-			if err != nil {
-				log.Fatal(err)
-				http.Error(response, "Error al leer el body", http.StatusInternalServerError)
-			}
-
-			var dataEntrenamiento DataTrain
-
-			json.Unmarshal(body, &dataEntrenamiento)
-
-			listDataTrain = append(listDataTrain, dataEntrenamiento)
-
-			//Respuesta del servidor
-			response.Header().Set("Content-Type", "application/json")
-			response.WriteHeader(http.StatusOK)
-			io.WriteString(response, `{
-				"msg":"Registro Data Entrenamiento correcta"
-			}`)
-		} else {
-			http.Error(response, "Contenido no válido", http.StatusBadRequest)
+		if err != nil {
+			log.Fatal(err)
+			http.Error(response, "Error al leer el body", http.StatusInternalServerError)
 		}
+
+		var dataEntrenamiento DataTrain
+
+		json.Unmarshal(body, &dataEntrenamiento)
+
+		listDataTrain = append(listDataTrain, dataEntrenamiento)
+
+		//Respuesta del servidor
+		response.Header().Set("Content-Type", "application/json")
+		response.WriteHeader(http.StatusOK)
+		io.WriteString(response, `{
+			"msg":"Registro Data Entrenamiento correcta"
+		}`)
 	} else {
 		http.Error(response, "Método no válido", http.StatusMethodNotAllowed)
 	}
 }
 
 func agregarPrediccion(response http.ResponseWriter, request *http.Request) {
-	//setupCorsResponse(&response, request)
+	enableCors(&response)
 	if request.Method == "POST" {
-		if request.Header.Get("Content-Type") == "application/json" {
-			//Almacena la info que llega por el body
-			body, err := ioutil.ReadAll(request.Body)
+		//Almacena la info que llega por el body
+		body, err := ioutil.ReadAll(request.Body)
 
-			if err != nil {
-				log.Fatal(err)
-				http.Error(response, "Error al leer el body", http.StatusInternalServerError)
-			}
-
-			var dataPredict DataPredcit
-
-			json.Unmarshal(body, &dataPredict)
-
-			listDataPredict = append(listDataPredict, dataPredict)
-
-			//Respuesta del servidor
-			response.Header().Set("Content-Type", "application/json")
-			response.WriteHeader(http.StatusOK)
-			io.WriteString(response, `{
-				"msg":"Registro Data Predicicón correcta"
-			}`)
-		} else {
-			http.Error(response, "Contenido no válido", http.StatusBadRequest)
+		if err != nil {
+			log.Fatal(err)
+			http.Error(response, "Error al leer el body", http.StatusInternalServerError)
 		}
+
+		var dataPredict DataPredcit
+
+		json.Unmarshal(body, &dataPredict)
+
+		listDataPredict = append(listDataPredict, dataPredict)
+
+		//Respuesta del servidor
+		response.Header().Set("Content-Type", "application/json")
+		response.WriteHeader(http.StatusOK)
+		io.WriteString(response, `{
+			"msg":"Registro Data Predicicón correcta"
+		}`)
 	} else {
 		http.Error(response, "Método no válido", http.StatusMethodNotAllowed)
 	}
