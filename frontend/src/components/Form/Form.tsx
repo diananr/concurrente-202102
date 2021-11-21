@@ -11,10 +11,10 @@ const urlBase = 'http://localhost:9000';
 const Form: React.FC<any> = () => {
   const [formData, setFormData] = useState({
     iris_type: '',
-    petal_length: '',
-    petal_width: '',
-    sepal_length: '',
-    sepal_width: '',
+    petal_length: 0,
+    petal_width: 0,
+    sepal_length: 0,
+    sepal_width: 0,
   });
   const [errorData, setErrorData] = useState({
     petal_length: '',
@@ -24,7 +24,7 @@ const Form: React.FC<any> = () => {
   });
   const [loadingTraining, setLoadingTraining] = useState<boolean>(false);
   const [loadingSending, setLoadingSending] = useState<boolean>(false);
-  const [showMessage, setShowMessage] = useState<boolean>(true);
+  const [showMessage, setShowMessage] = useState<boolean>(false);
 
   const closeModal = () => {
     setShowMessage(false);
@@ -39,14 +39,12 @@ const Form: React.FC<any> = () => {
         const { iris_type, ...otherFormData } = formData;
         const payload = { ...otherFormData, typeRequest: 'predict' };
         const response = postRequest(url, payload);
-        console.log('response', response);
         setLoadingSending(false);
       } else {
         setErrorData(errorMessages);
       }
     } catch (error) {
       setLoadingSending(false);
-      console.log('error', error);
     }
   };
 
@@ -63,14 +61,12 @@ const Form: React.FC<any> = () => {
           typeRequest: 'train',
         };
         const response = postRequest(url, payload);
-        console.log('response', response);
         setLoadingTraining(false);
       } else {
         setErrorData(errorMessages);
       }
     } catch (error) {
       setLoadingTraining(false);
-      console.log('error', error);
     }
   };
 
@@ -92,8 +88,9 @@ const Form: React.FC<any> = () => {
             label="Alto del pétalo"
             value={formData.petal_length}
             error={errorData.petal_length}
+            type="number"
             onChange={(e) => {
-              const newValue = e.target.value;
+              const newValue = Number(e.target.value);
               const { petal_length, ...otherValues } = formData;
               setFormData({ petal_length: newValue, ...otherValues });
             }}
@@ -103,8 +100,9 @@ const Form: React.FC<any> = () => {
             label="Ancho del pétalo"
             value={formData.petal_width}
             error={errorData.petal_width}
+            type="number"
             onChange={(e) => {
-              const newValue = e.target.value;
+              const newValue = Number(e.target.value);
               const { petal_width, ...otherValues } = formData;
               setFormData({ petal_width: newValue, ...otherValues });
             }}
@@ -114,8 +112,9 @@ const Form: React.FC<any> = () => {
             label="Alto del cépalo"
             value={formData.sepal_length}
             error={errorData.sepal_length}
+            type="number"
             onChange={(e) => {
-              const newValue = e.target.value;
+              const newValue = Number(e.target.value);
               const { sepal_length, ...otherValues } = formData;
               setFormData({ sepal_length: newValue, ...otherValues });
             }}
@@ -125,8 +124,9 @@ const Form: React.FC<any> = () => {
             label="Ancho del cépalo"
             value={formData.sepal_width}
             error={errorData.sepal_width}
+            type="number"
             onChange={(e) => {
-              const newValue = e.target.value;
+              const newValue = Number(e.target.value);
               const { sepal_width, ...otherValues } = formData;
               setFormData({ sepal_width: newValue, ...otherValues });
             }}

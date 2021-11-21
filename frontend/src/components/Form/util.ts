@@ -43,17 +43,21 @@ export const postRequest = async (url: string, payload: any) => {
   try {
     const response = await fetch(url, {
       method: 'POST',
-      mode: 'cors',
+      //mode: 'no-cors',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
       },
       body: JSON.stringify(payload),
     });
+    console.log('response', response);
     const data = response.json();
+    console.log('data', data);
     return data;
   } catch (error) {
+    console.log('error');
     return error;
   }
 };
