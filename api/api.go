@@ -69,6 +69,36 @@ func agregarEntrenamiento(response http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func agregarPrediccion(response http.ResponseWriter, request *http.Request) {
+	if request.Method == "POST" {
+		if request.Header.Get("Content-Type") == "application/json" {
+			//Almacena la info que llega por el body
+			body, err := ioutil.ReadAll(request.Body)
+
+			if err != nil {
+				log.Fatal(err)
+				http.Error(response, "Error al leer el body", http.StatusInternalServerError)
+			}
+
+			var dataPredict DataPredcit
+
+			json.Unmarshal(body, &dataPredict)
+
+			listDataPredict = append(listDataPredict, dataPredict)
+
+			//Respuesta del servidor
+			response.Header().Set("Content-Type", "application/json")
+			io.WriteString(response, `{
+				"msg":"Registro Data Entrenamiento correcta"
+			}`)
+		} else {
+			http.Error(response, "Contenido no válido", http.StatusBadRequest)
+		}
+	} else {
+		http.Error(response, "Método no válido", http.StatusMethodNotAllowed)
+	}
+}
+
 func manejadorSolicitudes() {
 	//Enrutador
 	mux := http.NewServeMux()
@@ -76,6 +106,7 @@ func manejadorSolicitudes() {
 	//Endpoints
 	mux.HandleFunc("/home", mostrarHome)
 	mux.HandleFunc("/agregartrain", agregarEntrenamiento)
+	mux.HandleFunc("/agregarpredict", agregarPrediccion)
 
 	//Errors
 	log.Fatal(http.ListenAndServe(":9000", mux))
