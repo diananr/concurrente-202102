@@ -1,5 +1,5 @@
 import React from 'react';
-import FormA from '../components/FormA/FormA';
+import Form from '../components/Form/Form';
 import './App.css';
 
 const App: React.FC<any> = () => {
@@ -7,7 +7,7 @@ const App: React.FC<any> = () => {
     <main className="appView">
       <section className="appView_content">
         <h1 className="title">PlantDex</h1>
-        <FormA />
+        <Form />
       </section>
       <figure className="appView_figure"></figure>
     </main>
