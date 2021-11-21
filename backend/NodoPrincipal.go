@@ -1,11 +1,39 @@
 package main
 
 import (
-	"bufio"
+	"encoding/json"
 	"fmt"
 	"net"
-	"strings"
 )
+
+type Mensaje struct {
+	SepalL      float64 `json:"sepal_length"`
+	SepalW      float64 `json:"sepal_width"`
+	PetalL      float64 `json:"petal_length"`
+	PetalW      float64 `json:"petal_width"`
+	Class       string  `json:"class"`
+	TypeRequest string  `json:"type"`
+}
+
+var listMensaje []Mensaje
+
+type IrisT struct {
+	SepalL float64 `json:"sepal_length"`
+	SepalW float64 `json:"sepal_width"`
+	PetalL float64 `json:"petal_length"`
+	PetalW float64 `json:"petal_width"`
+	Class  string  `json:"class"`
+}
+var listIrisT []IrisT
+
+type IrisP struct {
+	SepalL float64 `json:"sepal_length"`
+	SepalW float64 `json:"sepal_width"`
+	PetalL float64 `json:"petal_length"`
+	PetalW float64 `json:"petal_width"`
+}
+
+var listIrisP []IrisP
 
 func conectarAPI() {
 	fmt.Println("Launching server...")
@@ -15,18 +43,14 @@ func conectarAPI() {
 	defer ln.Close()
 
 	// accept connection on port
-	
+
 	// run loop forever (or until ctrl-c)
 	for {
 		conn, _ := ln.Accept()
-		// will listen for message to process ending in newline (\n)
-		message, _ := bufio.NewReader(conn).ReadString('\n')
-		// output message received
-		fmt.Print("Message Received:", string(message))
-		// sample process for string received
-		newmessage := strings.ToUpper(message)
-		// send new string back to client
-		conn.Write([]byte(newmessage + "\n"))
+		datos := json.NewDecoder(conn)
+		var arrMensaje Mensaje
+		err := datos.Decode(&arrMensaje)
+		fmt.Println(arrMensaje.PetalL, err)
 	}
 }
 
