@@ -9,7 +9,7 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"os"
+	//"strings"
 )
 
 //Estructura Para Entrenar
@@ -19,7 +19,7 @@ type DataTrain struct {
 	PetalL      float64 `json:"petal_length"`
 	PetalW      float64 `json:"petal_width"`
 	Class       string  `json:"class"`
-	typeRequest string  `json:"typeRequest"`
+	TypeRequest string  `json:"type"`
 }
 
 var listDataTrain []DataTrain
@@ -30,7 +30,7 @@ type DataPredcit struct {
 	SepalW      float64 `json:"sepal_width"`
 	PetalL      float64 `json:"petal_length"`
 	PetalW      float64 `json:"petal_width"`
-	typeRequest string  `json:"typeRequest"`
+	TypeRequest string  `json:"type"`
 }
 
 var listDataPredict []DataPredcit
@@ -66,7 +66,8 @@ func agregarEntrenamiento(response http.ResponseWriter, request *http.Request) {
 
 		json.Unmarshal(body, &dataEntrenamiento)
 
-		listDataTrain = append(listDataTrain, dataEntrenamiento)
+		//mensaje := strings.ToUpper(dataEntrenamiento.TypeRequest)
+		enviarEntrenamiento(dataEntrenamiento)
 
 		//Respuesta del servidor
 		response.Header().Set("Content-Type", "application/json")
@@ -91,10 +92,13 @@ func agregarPrediccion(response http.ResponseWriter, request *http.Request) {
 		}
 
 		var dataPredict DataPredcit
-
 		json.Unmarshal(body, &dataPredict)
 
-		listDataPredict = append(listDataPredict, dataPredict)
+		enviarPrediccion(dataPredict)
+
+		// listDataPredict = append(listDataPredict, dataPredict)
+
+		// mensaje := strings.ToUpper(listDataPredict[0].typeRequest)
 
 		//Respuesta del servidor
 		response.Header().Set("Content-Type", "application/json")
@@ -123,23 +127,28 @@ func manejadorSolicitudes() {
 	log.Fatal(http.ListenAndServe(":9000", mux))
 }
 
-func conectarNodoPrincipal() {
+func enviarEntrenamiento(mensaje DataTrain) {
 	// connect to this socket
 	conn, _ := net.Dial("tcp", "127.0.0.1:8081")
-	for {
-		// read in input from stdin
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print("Text to send: ")
-		text, _ := reader.ReadString('\n')
-		// send to socket
-		fmt.Fprintf(conn, text+"\n")
-		// listen for reply
-		message, _ := bufio.NewReader(conn).ReadString('\n')
-		fmt.Print("Message from server: " + message)
-		go manejadorSolicitudes()
-	}
+	// send to socket
+	fmt.Fprintln(conn, mensaje)
+	// listen for reply
+	message, _ := bufio.NewReader(conn).ReadString('\n')
+	fmt.Print("Message from server: " + message)
+	conn.Close()
+}
+
+func enviarPrediccion(mensaje DataPredcit) {
+	// connect to this socket
+	conn, _ := net.Dial("tcp", "127.0.0.1:8081")
+	// send to socket
+	fmt.Fprintln(conn, mensaje)
+	// listen for reply
+	message, _ := bufio.NewReader(conn).ReadString('\n')
+	fmt.Print("Message from server: " + message)
+	conn.Close()
 }
 
 func main() {
-	conectarNodoPrincipal()
+	manejadorSolicitudes()
 }
