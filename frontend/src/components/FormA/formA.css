@@ -1,29 +1,38 @@
 .formA_detail {
   margin: 0 0 2rem;
 }
-
 .formA_detail > .subtitle {
   font-size: 20px;
   font-weight: 500;
   margin: 0 0 0.5rem;
 }
-
 .formA_detail > .message {
   font-size: 16px;
   font-weight: 400;
 }
-
 .formA_form > .formInput {
   margin: 0 0 1rem;
 }
-
-.formA_form > .formButton {
+.formA_form > .formButtons {
+  display: flex;
+  flex-direction: row;
+}
+.formA_form > .formButtons > .formButtons_item {
   margin: 1rem 0 0;
   width: 30%;
 }
+.formA_form > .formButtons > .formButtons_item:first-of-type {
+  margin: 1rem 1rem 0 0;
+}
 
 @media (max-width: 768px) {
-  .formA_form > .formButton {
+  .formA_form > .formButtons {
+    flex-direction: column;
+  }
+  .formA_form > .formButtons > .formButtons_item {
     width: 100%;
+  }
+  .formA_form > .formButtons > .formButtons_item:first-of-type {
+    margin: 1rem 0 0;
   }
 }
