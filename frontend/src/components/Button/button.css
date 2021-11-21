@@ -1,8 +1,5 @@
 .button {
-  background-color: #a571d9;
-  border: 1px solid #a571d9;
   border-radius: 4px;
-  color: white;
   cursor: pointer;
   font-size: 16px;
   min-height: 45px;
@@ -10,12 +7,35 @@
   padding: 0.5rem 2rem;
 }
 
-.button:hover {
+.button.button__primary {
+  background-color: #a571d9;
+  border: 1px solid #a571d9;
+  color: white;
+}
+
+.button.button__primary:hover {
   background-color: #6204bf;
   border: 1px solid #6204bf;
 }
 
-.button:active {
+.button.button__primary:active {
   background-color: #3f0259;
   border: 1px solid #3f0259;
+}
+
+.button.button__primaryOutline {
+  background-color: white;
+  border: 1px solid #a571d9;
+  color: #a571d9;
+}
+
+.button.button__primaryOutline:hover {
+  background-color: #a571d9c2;
+  border: 1px solid #a571d9c2;
+  color: white;
+}
+
+.button.button__primaryOutline:active {
+  background-color: #3f0259a9;
+  border: 1px solid #3f0259a9;
 }
