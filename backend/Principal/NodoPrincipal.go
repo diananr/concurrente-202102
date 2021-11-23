@@ -25,7 +25,6 @@ func enviarNodo1(mensaje string) {
 	// listen for reply
 	// message, _ := bufio.NewReader(conn).ReadString('\n')
 	// fmt.Print("Message from server: " + message)
-	conn.Close()
 }
 
 func enviarEntrenamiento(mensaje Mensaje) {
