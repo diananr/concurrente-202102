@@ -40,7 +40,7 @@ const Form: React.FC<any> = () => {
         setLoadingSending(true);
         const url = `${urlBase}/agregarpredict`;
         const { iris_type, ...otherFormData } = formData;
-        const payload = { ...otherFormData, typeRequest: 'predict' };
+        const payload = { ...otherFormData, type: 'predict' };
         const response = await postRequest(url, payload);
         setLoadingTraining(false);
         setModalMessage(response.msg);
@@ -63,7 +63,7 @@ const Form: React.FC<any> = () => {
         const payload = {
           ...otherFormData,
           class: iris_type,
-          typeRequest: 'train',
+          type: 'train',
         };
         const response = await postRequest(url, payload);
         setLoadingTraining(false);
